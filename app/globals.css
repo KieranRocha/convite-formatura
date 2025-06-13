@@ -24,3 +24,70 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.reflect-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    45deg,
+    #f97316 0%,
+    #f97316 40%,
+    #f49959 50%,
+    #f97316 60%,
+    #f97316 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-bg 3s infinite;
+}
+
+.reflect-shimmer::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  border-radius: inherit;
+  animation: shimmer-reflect 2s infinite;
+  z-index: 1;
+}
+
+.reflect-shimmer svg,
+.reflect-shimmer span {
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes shimmer-bg {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer-reflect {
+  0% {
+    transform: translateX(-100%) skewX(-45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200%) skewX(-45deg);
+    opacity: 0;
+  }
+}
