@@ -8,7 +8,6 @@ import {
   Calendar,
   Clock,
   User,
-  Mail,
   Phone,
   ArrowLeft,
   Star,
@@ -107,7 +106,7 @@ const useDynamicTheme = (temperature) => {
 
 export default function GraduationInvitation() {
   const [currentStep, setCurrentStep] = useState("welcome"); // welcome, heating, details, rsvp
-  const [rsvpData, setRsvpData] = useState({ name: "", email: "", guests: 1 });
+  const [rsvpData, setRsvpData] = useState({ name: "", phone: "", guests: 1 });
   const [rsvpStatus, setRsvpStatus] = useState("idle");
   const [errors, setErrors] = useState({});
   const [temperature, setTemperature] = useState(0);
@@ -183,7 +182,7 @@ export default function GraduationInvitation() {
   const handleGoBack = useCallback(() => {
     setCurrentStep("welcome");
     setTemperature(0);
-    setRsvpData({ name: "", email: "", guests: 1 });
+    setRsvpData({ name: "", phone: "", guests: 1 });
     setErrors({});
     setRsvpStatus("idle");
     setShowRsvpModal(false);
@@ -193,14 +192,28 @@ export default function GraduationInvitation() {
   const validateForm = () => {
     const newErrors = {};
     if (!rsvpData.name.trim()) newErrors.name = "Nome é obrigatório";
-    if (!rsvpData.email.trim()) newErrors.email = "Email é obrigatório";
-    else if (!/\S+@\S+\.\S+/.test(rsvpData.email))
-      newErrors.email = "Email inválido";
+    if (!rsvpData.phone.trim()) newErrors.phone = "Telefone é obrigatório";
+    else if (
+      !/^\(\d{2}\)\s\d{4,5}-\d{4}$|^\d{10,11}$/.test(
+        rsvpData.phone.replace(/\D/g, "")
+      )
+    )
+      newErrors.phone = "Telefone inválido";
     if (rsvpData.guests < 1 || rsvpData.guests > 5)
       newErrors.guests = "Entre 1 e 5 acompanhantes";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Formatar telefone enquanto digita
+  const formatPhone = (value) => {
+    const numbers = value.replace(/\D/g, "");
+    if (numbers.length <= 10) {
+      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+    } else {
+      return numbers.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+    }
   };
 
   // Enviar RSVP
@@ -219,7 +232,7 @@ export default function GraduationInvitation() {
         body: JSON.stringify({
           _subject: `✅ Nova Confirmação - ${rsvpData.name}`, // Assunto do email
           nome: rsvpData.name,
-          email: rsvpData.email,
+          telefone: rsvpData.phone,
           convidados: rsvpData.guests,
           data_confirmacao: new Date().toLocaleString("pt-BR"),
           evento: "Formatura Kieran Rocha 🎓",
@@ -648,24 +661,26 @@ export default function GraduationInvitation() {
                     </div>
                     <div>
                       <label className="block text-white font-medium mb-2 text-sm">
-                        <Mail className="w-4 h-4 inline mr-2" />
-                        Email de Contato *
+                        <Phone className="w-4 h-4 inline mr-2" />
+                        Telefone de Contato *
                       </label>
                       <input
-                        type="email"
-                        value={rsvpData.email}
-                        onChange={(e) =>
+                        type="tel"
+                        value={rsvpData.phone}
+                        onChange={(e) => {
+                          const formatted = formatPhone(e.target.value);
                           setRsvpData((prev) => ({
                             ...prev,
-                            email: e.target.value,
-                          }))
-                        }
+                            phone: formatted,
+                          }));
+                        }}
                         className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all text-sm"
-                        placeholder="seu.email@terminal.com"
+                        placeholder="(51) 99999-9999"
+                        maxLength={15}
                       />
-                      {errors.email && (
+                      {errors.phone && (
                         <p className="text-red-400 text-xs mt-1">
-                          {errors.email}
+                          {errors.phone}
                         </p>
                       )}
                     </div>
@@ -751,7 +766,7 @@ export default function GraduationInvitation() {
                   </h4>
                   <div className="space-y-2 text-emerald-300 font-mono text-sm text-left">
                     <p>✓ Nome: {rsvpData.name}</p>
-                    <p>✓ Email: {rsvpData.email}</p>
+                    <p>✓ Telefone: {rsvpData.phone}</p>
                     <p>✓ Convidados: {rsvpData.guests}</p>
                     <p>✓ Status: CONFIRMADO</p>
                   </div>
