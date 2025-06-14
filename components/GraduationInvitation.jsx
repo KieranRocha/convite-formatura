@@ -127,23 +127,37 @@ export default function GraduationInvitation() {
   }, []);
 
   // Animação de aquecimento mais suave e lenta
+  // Animação de aquecimento mais suave e eficiente
   useEffect(() => {
-    if (currentStep === "heating" && isClient) {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 1;
-        setTemperature(progress);
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setCurrentStep("details");
-          }, 1000);
-        }
-      }, 50); // 50ms para uma animação de 5 segundos (100 * 50ms)
-
-      return () => clearInterval(interval);
+    if (currentStep !== "heating" || !isClient) {
+      return;
     }
+
+    let animationFrameId;
+    const startTime = performance.now();
+    const duration = 5000; // 5 segundos, igual ao anterior
+
+    const animate = (currentTime) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1);
+
+      setTemperature(progress * 100);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Atingiu 100%, aguarda 1 segundo para ir para os detalhes
+        setTimeout(() => {
+          setCurrentStep("details");
+        }, 1000);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [currentStep, isClient]);
 
   // Criar partículas quando aquecido
@@ -192,20 +206,20 @@ export default function GraduationInvitation() {
   const validateForm = () => {
     const newErrors = {};
     if (!rsvpData.name.trim()) newErrors.name = "Nome é obrigatório";
-    if (!rsvpData.phone.trim()) newErrors.phone = "Telefone é obrigatório";
-    else if (
-      !/^\(\d{2}\)\s\d{4,5}-\d{4}$|^\d{10,11}$/.test(
-        rsvpData.phone.replace(/\D/g, "")
-      )
-    )
-      newErrors.phone = "Telefone inválido";
+
+    const phoneNumbers = rsvpData.phone.replace(/\D/g, "");
+    if (!phoneNumbers) {
+      newErrors.phone = "Telefone é obrigatório";
+    } else if (!/^\d{10,11}$/.test(phoneNumbers)) {
+      newErrors.phone = "Telefone inválido (deve ter 10 ou 11 dígitos)";
+    }
+
     if (rsvpData.guests < 1 || rsvpData.guests > 5)
       newErrors.guests = "Entre 1 e 5 acompanhantes";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   // Formatar telefone enquanto digita
   const formatPhone = (value) => {
     const numbers = value.replace(/\D/g, "");
