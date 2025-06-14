@@ -788,7 +788,7 @@ export default function GraduationInvitation() {
                 <div className="mt-8 space-y-4">
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a
-                      href="https://www.google.com/calendar/render?action=TEMPLATE&text=Formatura+Kieran+Rocha&dates=20251220T200000/20251220T230000"
+                      href="https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MXZudTJiYTVic3NubjBxb3AzZG9hMTBvNXMgMmU4NWRiZWRmNjc4YTI2ZjAyYTlmZjk1ZWEwMDY4NzQ3NzlhOThkZTMzZTUwZGFiMmYyMjZkMGQyNzYxYmE0ZEBn&tmsrc=2e85dbedf678a26f02a9ff95ea006874779a98de33e50dab2f226d0d2761ba4d%40group.calendar.google.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-6 py-3 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-all border border-white/30 transform hover:scale-105"
