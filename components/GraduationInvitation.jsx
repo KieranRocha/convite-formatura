@@ -147,31 +147,31 @@ export default function GraduationInvitation() {
   }, [currentStep, isClient]);
 
   // Criar partículas quando aquecido
-  useEffect(() => {
-    if (currentStep === "details" && particlesRef.current && isClient) {
-      const container = particlesRef.current;
-      container.innerHTML = "";
+  // useEffect(() => {
+  //   if (currentStep === "details" && particlesRef.current && isClient) {
+  //     const container = particlesRef.current;
+  //     container.innerHTML = "";
 
-      for (let i = 0; i < 60; i++) {
-        const particle = document.createElement("div");
-        particle.className = "absolute w-1 h-1 rounded-full animate-pulse";
-        particle.style.left = Math.random() * 100 + "%";
+  //     for (let i = 0; i < 60; i++) {
+  //       const particle = document.createElement("div");
+  //       particle.className = "absolute w-1 h-1 rounded-full animate-pulse";
+  //       particle.style.left = Math.random() * 100 + "%";
 
-        const colors = ["#f97316", "#ef4444", "#ec4899", "#d946ef", "#8b5cf6"];
-        particle.style.backgroundColor =
-          colors[Math.floor(Math.random() * colors.length)];
+  //       const colors = ["#f97316", "#ef4444", "#ec4899", "#d946ef", "#8b5cf6"];
+  //       particle.style.backgroundColor =
+  //         colors[Math.floor(Math.random() * colors.length)];
 
-        particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
-        particle.style.animationDelay = Math.random() * 4 + "s";
-        particle.style.filter = "blur(0.5px)";
-        particle.style.boxShadow = `0 0 4px ${particle.style.backgroundColor}`;
-        particle.style.animation = `heatRise ${
-          Math.random() * 3 + 2
-        }s linear infinite`;
-        container.appendChild(particle);
-      }
-    }
-  }, [currentStep, isClient]);
+  //       particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+  //       particle.style.animationDelay = Math.random() * 4 + "s";
+  //       particle.style.filter = "blur(0.5px)";
+  //       particle.style.boxShadow = `0 0 4px ${particle.style.backgroundColor}`;
+  //       particle.style.animation = `heatRise ${
+  //         Math.random() * 3 + 2
+  //       }s linear infinite`;
+  //       container.appendChild(particle);
+  //     }
+  //   }
+  // }, [currentStep, isClient]);
 
   // Iniciar aquecimento
   const handleStartHeating = () => {
